@@ -1,0 +1,108 @@
+CREATE DATABASE EduX;
+GO
+
+USE EduX;
+GO
+
+CREATE TABLE Instituicao (
+	IdInstituicao INT PRIMARY KEY IDENTITY NOT NULL,
+	Logradouro VARCHAR (50) NOT NULL,
+	Numero VARCHAR (50),
+	Bairro VARCHAR (50),
+	Cidade VARCHAR (50),
+	UF CHAR (2),
+	CEP VARCHAR (11),
+);
+
+CREATE TABLE Categoria (
+	IdCategoria INT PRIMARY KEY IDENTITY NOT NULL,
+	Tipo VARCHAR (50) NOT NULL,
+);
+
+CREATE TABLE Perfil (
+	IdPerfil INT PRIMARY KEY IDENTITY NOT NULL,
+	Tipo VARCHAR (50) NOT NULL,
+);
+
+CREATE TABLE Curso(
+	IdCurso INT PRIMARY KEY IDENTITY NOT NULL,
+	Tipo VARCHAR (50) NOT NULL,
+
+	--FK
+	IdInstituicao INT FOREIGN KEY REFERENCES Instituicao (IdInstituicao)
+);
+
+CREATE TABLE Usuario(
+	IdUsuario INT PRIMARY KEY IDENTITY NOT NULL,
+	Nome VARCHAR (100) NOT NULL,
+	Email VARCHAR (80) NOT NULL,
+	Senha VARCHAR (100) NOT NULL,
+	DataNascimento DATETIME,
+
+	--FK
+	IdPerfil INT FOREIGN KEY REFERENCES Perfil (IdPerfil)
+	
+);
+
+CREATE TABLE Dica(
+	IdDica INT PRIMARY KEY IDENTITY NOT NULL,
+	Tema VARCHAR(100) NOT NULL,
+
+	--FK
+	IdUsuario INT FOREIGN KEY REFERENCES Usuario (IdUsuario)
+);
+
+CREATE TABLE Post(
+	IdPost INT PRIMARY KEY IDENTITY NOT NULL,
+    Curtida INT DEFAULT  0,
+	Texto VARCHAR (100) NOT NULL,
+	Imagem VARCHAR (80) NOT NULL,
+
+	--FK 
+	IdUsuario INT FOREIGN KEY REFERENCES Usuario (IdUsuario)
+);
+
+CREATE TABLE Objetivo(
+	IdObjetivo INT PRIMARY KEY IDENTITY NOT NULL,
+	Descricao VARCHAR (100),
+
+	--FK 
+	IdCategoria INT FOREIGN KEY REFERENCES Categoria (IdCategoria)
+
+);
+
+CREATE TABLE AlunoTurma(
+	IdAlunoTurma INT PRIMARY KEY IDENTITY NOT NULL,
+
+	--FK
+	IdUsuario INT FOREIGN KEY REFERENCES Usuario (IdUsuario)
+
+
+);
+
+CREATE TABLE ObjetivoAluno(
+	IdObjetivoAluno INT PRIMARY KEY IDENTITY NOT NULL,
+	Nota INT NOT NULL,
+	DataEntrega DATETIME NOT NULL,
+
+	--FK
+	IdObjetivo INT FOREIGN KEY REFERENCES Objetivo (IdObjetivo),
+	IdAlunoTurma INT FOREIGN KEY REFERENCES AlunoTurma (IdAlunoTurma)
+
+);
+
+CREATE TABLE Turma(
+	IdTurma INT PRIMARY KEY IDENTITY NOT NULL,
+	
+	--FK
+	IdCurso INT FOREIGN KEY REFERENCES Curso (IdCurso),
+	IdAlunoTurma INT FOREIGN KEY REFERENCES AlunoTurma (IdAlunoTurma)
+);
+
+CREATE TABLE ProfessorTurma(
+	IdProfessorTurma INT PRIMARY KEY IDENTITY NOT NULL,
+
+	--FK
+	IdUsuario INT FOREIGN KEY REFERENCES Usuario (IdUsuario),
+	IdTurma INT FOREIGN KEY REFERENCES Turma (IdTurma),
+);
